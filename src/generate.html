@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redstone Wallet</title>
+    <link rel="stylesheet" type="text/css" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="./main.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div style="text-align: center;">
+            <image  width="100" height="100" src="https://cdn.discordapp.com/attachments/710608408406917180/958069522429005904/favicon.png">
+            <h2>Redstone Wallet</h2>
+        </div>
+      </div>  
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div style="text-align: center;">
+          <button type="button" class="btn btn-primary" onclick='getWalletfromgen()'>Generate new Wallet</button>
+          <form>
+            <input type="password" id="password" placeholder="Wallet password" value="">
+          </form>
+        </div>
+      </div>
+      <a href="./index.html">Go back</a>
+    </div>
+    <script>
+      function getWalletfromgen(){
+        let wallet = generateWallet();
+        let pass = document.getElementById("password").value;
+        saveWallet(wallet.privKey, wallet.address, wallet.pubKey, pass);
+        alert("Wallet generated and saved!");
+        window.location.assign("./index.html");
+      }
+    </script>
+  </body>
+  </body>
+</html>

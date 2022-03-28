@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redstone Wallet</title>
+    <link rel="stylesheet" type="text/css" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="./main.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div style="text-align: center;">
+            <image  width="100" height="100" src="https://cdn.discordapp.com/attachments/710608408406917180/958069522429005904/favicon.png">
+            <h2>Redstone Wallet</h2>
+        </div>
+      </div>  
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div style="text-align: center;">
+          <form>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Unlock</label>
+              <input type="password" class="form-control" id="password" placeholder="Wallet password">
+            </div>
+            <button type="button" class="btn btn-primary" onclick='getUnlock()'>Unlock Wallet</button>
+            <button type="button" class="btn btn-primary" onclick='del()'>Delite Wallet</button>
+            <a id="areyousure"type="button" class="" onclick='delWallet()'></a>
+          </form>
+        </div>
+      </div>
+      <a href="./index.html">Go back</a>
+    </div>
+    <script>
+      function getUnlock(){
+        let pass = document.getElementById("password").value;
+        const wallet = loadWallet(pass);
+        tempSaveWallet(wallet.address, wallet.privateKey, wallet.publicKey);
+        alert("Unlocked!");
+        window.location.assign("./unlocked.html");
+      }
+      function del(){
+        document.getElementById("areyousure").innerHTML = "Are you sure? Yes";
+      }
+      function delWallet(){
+        deleteWallet();
+        alert("Wallet deleted!");
+        // got to index.html
+        window.location.assign("./index.html");
+      }
+    </script>
+  </body>
+  </body>
+</html>
