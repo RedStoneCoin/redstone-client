@@ -38,12 +38,17 @@ function loadWallet(password) {
     const decipher = crypto.createDecipher('aes-256-cbc', password);
     const Store = require('electron-store');
     const store = new Store();  
+    try {
     let decrypted = decipher.update(store.get('privateKey'),'hex','utf8');
     decrypted += decipher.final('utf8');
     return {
         address:store.get('address'),
         privateKey:decrypted,
         publicKey:store.get('publicKey')
+    }
+    } catch (e) {
+        alert('Invalid password');
+        return null;
     }
 }
 function isThereWallet() {

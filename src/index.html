@@ -6,43 +6,14 @@
     <link rel="stylesheet" type="text/css" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <script src="./main.js"></script>
   </head>
-  <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div style="text-align: center;">
-            <image  width="100" height="100" src="https://cdn.discordapp.com/attachments/710608408406917180/958069522429005904/favicon.png">
-            <h2>Welcome to Redstone Wallet</h2>
-        </div>
-      </div>  
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div style="text-align: center;">
-            <h3>
-                <a id="gen" href="./generate.html">Generate Wallet</a>
-            </h3>
-            <h3>
-                <a id="import" href="./import.html"> Import Wallet private key </a>
-            </h3>
-            <h3>
-                <a id="wallet"href="./wallet.html">  </a>
-            </h3>
-        </div>
-    </div>
-    <script>
-        const is = isThereWallet();
-        if (is) {
-            document.getElementById("wallet").innerHTML = "Login";
-                        // dont show gen and import
-            document.getElementById("import").innerHTML = "";
-            document.getElementById("gen").innerHTML = "";
-        } else {
-            document.getElementById("wallet").innerHTML = "";
+  <script>
+    const is = isThereWallet();
+    if (is) {
+      // got to prewallet.html
+      window.location.assign("./prewallet.html");
+    } else {
+      window.location.assign("./premake.html");
+    }
+</script>
 
-
-        }
-    </script>
-  </body>
-  </body>
 </html>

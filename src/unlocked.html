@@ -4,31 +4,126 @@
     <meta charset="utf-8">
     <title>Redstone Wallet</title>
     <link rel="stylesheet" type="text/css" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="./qrcode.min.js"></script>
     <script src="./main.js"></script>
   </head>
+  <style>
+    .wallet-card {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .send-card {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    }
+  
+    li {
+      float: left;
+      border-right:1px solid #bbb;
+    }
+  
+    li:last-child {
+      border-right: none;
+    }
+  
+    li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+  
+    li a:hover:not(.active) {
+      background-color: rgb(0, 0, 0);
+    }
+
+    .active {
+      background-color: #aa0404;
+    }
+    .qr-code-for-address {
+      left: auto;
+    }
+    .mar {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .mar_all {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+  </style>
   <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div style="text-align: center;">
-            <h2>Welcome <p id="addr"> </h2>
-        </div>
-      </div>  
+    <nav>
+      <ul>
+        <li style="float:right"><a href="./index.html">Lock wallet</a></li>
+        <li style="float:left"><a href="./unlocked.html">Settings</a></li>
+        <li style="float:left"><a href="./txh.html">Transaction History</a></li>
+      </ul>
+    </nav>
+    <div class="col-md-12">
+      <div style="text-align: center;">
+        <h2></h2>
     </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div style="text-align: center;">
-          
-        </div>
-        <a href="./index.html">Lock wallet!</a>
-    </div>
+  </div> 
     <script>
+      // This is wallet main page, this page should contain the following:
+      // 1. Bostrap card with wallet address 
+      // 2. Bosttrap card with wallet balance
+      // 3. QR code with wallet address
+      // 4. Bostrap card with to input address and amount and send button
+      // It should not contain the following:
+      // 1. Generate wallet button
+      // 2. Import wallet button
+  </script>
+
+</div>
+<div id="main" class="mar_all">
+  <div class="row col-12">
+    <div class="card col-6">
+      <div class="card-body">
+        <h5 class="card-title">Address</h5>
+        <p class="card-text"><input class="form-control" type="text" size="10" id="address" value="0" readonly></p>
+        <h5 class="card-title">Balance</h5>
+        <p class="card-text"><input class="form-control" type="text" size="10" id="balance" value="0" readonly></p>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Send</h5>
+        <p class="card-text"><input class="form-control" type="text" size="10" id="send-address" placeholder="Address"></p>
+        <p class="card-text"><input class="form-control" type="text" size="10" id="send-amount" placeholder="Amount"></p>
+        <button type="button" class="btn btn-outline-danger" onclick="send()">Send</button>
+      </div>
+    </div>
+    <div class="col-6 mar">
+      <div id="qrcode"></div>
+    </div>
+  </div>
+</div>
+<script>
         const tempLoad = tempLoadWallet();
         const addr = tempLoad.address;
         const pubKey = tempLoad.publicKey;
         const privKey = tempLoad.privateKey;
-        document.getElementById("addr").innerHTML = addr;
-    </script>
-  </body>
-  </body>
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+          text: addr,
+          width: 300,
+          height: 300, // red dark collor to match the redstone theme
+          colorDark : "#590000",
+          correctLevel : QRCode.CorrectLevel.H
+        });
+
+        document.getElementById("address").value = addr;
+        document.getElementById("balance").value = 0;
+
+</script>
+
 </html>

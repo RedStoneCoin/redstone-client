@@ -19,10 +19,11 @@
     <div class="row">
       <div class="col-md-12">
         <div style="text-align: center;">
-          <button type="button" class="btn btn-primary" onclick='getWalletfromgen()'>Generate new Wallet</button>
           <form>
-            <input type="password" id="password" placeholder="Wallet password" value="">
+            <input type="password"class="form-control"  id="password" placeholder="Wallet password" value="" width="1">
           </form>
+          <p> </p>
+          <button type="button" class="btn  btn-outline-danger" onclick='getWalletfromgen()'>Generate new Wallet</button>
         </div>
       </div>
       <a href="./index.html">Go back</a>
@@ -31,6 +32,10 @@
       function getWalletfromgen(){
         let wallet = generateWallet();
         let pass = document.getElementById("password").value;
+        if (pass == ""){
+          alert("Please enter a password");
+          return;
+        }
         saveWallet(wallet.privKey, wallet.address, wallet.pubKey, pass);
         alert("Wallet generated and saved!");
         window.location.assign("./index.html");

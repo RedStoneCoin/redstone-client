@@ -22,22 +22,23 @@
           <form>
             <div class="form-group">
               <label for="exampleInputPassword1">Unlock</label>
-              <input type="password" class="form-control" id="password" placeholder="Wallet password">
+              <input type="password" size="2" class="form-control" id="password" placeholder="Wallet password">
             </div>
-            <button type="button" class="btn btn-primary" onclick='getUnlock()'>Unlock Wallet</button>
-            <button type="button" class="btn btn-primary" onclick='del()'>Delite Wallet</button>
+            <p></p> 
+            <button type="button" class="btn btn-outline-danger" onclick='getUnlock()'>Unlock Wallet</button>
+            <button type="button" class="btn btn btn-danger" onclick='del()'>Delite Wallet</button>
             <a id="areyousure"type="button" class="" onclick='delWallet()'></a>
           </form>
         </div>
       </div>
-      <a href="./index.html">Go back</a>
+      <a href="./prewallet.html">Go back
+      </a>
     </div>
     <script>
       function getUnlock(){
         let pass = document.getElementById("password").value;
         const wallet = loadWallet(pass);
         tempSaveWallet(wallet.address, wallet.privateKey, wallet.publicKey);
-        alert("Unlocked!");
         window.location.assign("./unlocked.html");
       }
       function del(){
