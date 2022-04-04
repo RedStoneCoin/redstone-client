@@ -8,6 +8,9 @@
     <script src="./main.js"></script>
   </head>
   <style>
+    a {
+      color: rgb(255, 255, 255);
+    }
     .wallet-card {
       margin-top: 20px;
       margin-bottom: 20px;
@@ -66,7 +69,7 @@
     <nav>
       <ul>
         <li style="float:right"><a href="./index.html">Lock wallet</a></li>
-        <li style="float:left"><a href="./unlocked.html">Settings</a></li>
+        <li style="float:left"><a style="color:#bbb" onclick=Settings()>Settings</a></li>
         <li style="float:left"><a href="./txh.html">Transaction History</a></li>
       </ul>
     </nav>
@@ -123,6 +126,10 @@
 
         document.getElementById("address").value = addr;
         document.getElementById("balance").value = 0;
+        function Settings() {
+          tempSaveWallet(addr, privKey, pubKey);
+          window.location.href = "./settings.html";
+        }
 
 </script>
 
