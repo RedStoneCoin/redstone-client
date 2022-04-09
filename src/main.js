@@ -90,3 +90,47 @@ function tempLoadWallet() {
         publicKey:publicKey
     }
 }
+
+function set_node_ip(ip) {
+    const Store = require('electron-store');
+    const store = new Store();  
+    store.set('node_ip',ip);
+}
+
+function get_node_ip() {
+    const Store = require('electron-store');
+    const store = new Store();  
+    return store.get('node_ip');
+}
+
+// when we send a transaction, save it.
+// when balance checker detects new balance, save it
+function set_transaction(type,amount) {
+    const Store = require('electron-store');
+    const store = new Store();  
+    // save it to json array
+    let transactions = store.get('transactions');
+    if (transactions == null) {
+        transactions = [];
+    }
+    let date = new Date();
+    let time = date.getTime();
+
+    // type is either 'send' or 'receive'
+    transactions.push({
+        type:type,
+        amount:amount,
+        time:time
+    });
+    store.set('transactions',transactions);
+}
+function get_transactions() {
+    const Store = require('electron-store');
+    const store = new Store();  
+    let ret = store.get('transactions');
+    if (ret == null) {
+        ret = null;
+    }
+    return ret;
+
+}

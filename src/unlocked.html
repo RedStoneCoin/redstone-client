@@ -65,12 +65,18 @@
       margin-right: 20px;
     }
   </style>
+  <script>
+    function myFunction() {
+      get_transactions_ui();
+    }
+    </script>
   <body>
-    <nav>
+    <body onload="myFunction()">
+      <nav>
       <ul>
-        <li style="float:right"><a href="./index.html">Lock wallet</a></li>
-        <li style="float:left"><a style="color:#bbb" onclick=Settings()>Settings</a></li>
-        <li style="float:left"><a href="./txh.html">Transaction History</a></li>
+        <li style="float:right"><a href="./wallet.html">Lock wallet</a></li>
+        <li style="float:left"><a style="color:#bbb"  onclick="show('Page1');">Home</a></li>
+        <li style="float:left"><a style="color:#bbb" onclick="show('Page2');">Settings</a></li>
       </ul>
     </nav>
     <div class="col-md-12">
@@ -78,39 +84,89 @@
         <h2></h2>
     </div>
   </div> 
-    <script>
-      // This is wallet main page, this page should contain the following:
-      // 1. Bostrap card with wallet address 
-      // 2. Bosttrap card with wallet balance
-      // 3. QR code with wallet address
-      // 4. Bostrap card with to input address and amount and send button
-      // It should not contain the following:
-      // 1. Generate wallet button
-      // 2. Import wallet button
-  </script>
-
 </div>
-<div id="main" class="mar_all">
-  <div class="row col-12">
-    <div class="card col-6">
-      <div class="card-body">
-        <h5 class="card-title">Address</h5>
-        <p class="card-text"><input class="form-control" type="text" size="10" id="address" value="0" readonly></p>
-        <h5 class="card-title">Balance</h5>
-        <p class="card-text"><input class="form-control" type="text" size="10" id="balance" value="0" readonly></p>
+<div id="Page1" class="page">
+  <div id="main" class="mar_all">
+    <div class="row col-12">
+      <div class="card col-6">
+        <div class="card-body">
+          <h5 class="card-title">Address</h5>
+          <p class="card-text"><input class="form-control" type="text" size="10" id="address" value="0" readonly></p>
+          <h5 class="card-title">Balance</h5>
+          <p class="card-text"><input class="form-control" type="text" size="10" id="balance" value="0" readonly></p>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">Transactions: </h5>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Type</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Time</th>
+              </tr>
+            </thead>
+            <tbody id="transactions">
+            </tbody>
+        </div>
       </div>
-      <div class="card-body">
-        <h5 class="card-title">Send</h5>
-        <p class="card-text"><input class="form-control" type="text" size="10" id="send-address" placeholder="Address"></p>
-        <p class="card-text"><input class="form-control" type="text" size="10" id="send-amount" placeholder="Amount"></p>
-        <button type="button" class="btn btn-outline-danger" onclick="send()">Send</button>
+      <div class="col-6 mar">
+        <div id="qrcode"></div>
       </div>
-    </div>
-    <div class="col-6 mar">
-      <div id="qrcode"></div>
     </div>
   </div>
 </div>
+<div id="Page2" class="page" style="display:none">
+  <div id="card">
+    <div class="card-body">
+      <div id="Backup privkey_ask"> 
+        <div id="click_to_reveal">
+            <div class="col-md-12">
+                <div style="text-align: center;">
+                    <h5 class="card-title">Backup your private key</h5>
+                    <p id="key">  </p>
+                    <a id="backed_up-remove-key" onclick="remove_key()"></a>
+                    <br>
+                    <input type="password" id="password" placeholder="Password">
+                    <button class="btn btn-outline-danger" onclick=PassToKey()>Backup</button>
+                    <br>
+                </div>
+        </div>
+    </div>
+    </div>
+    <div id="about card">
+        <div class="card">
+    </div>
+  </div>
+  <div id="card">
+    <div class="card-body">
+      <div id="Backup privkey_ask"> 
+        <div id="click_to_reveal">
+            <div class="col-md-12">
+                <div style="text-align: center;">
+                    <h5 class="card-title">Change node ip</h5>
+                    <input type="text" id="node_ip" placeholder="ip:port">
+                    <button class="btn btn-outline-danger" onclick=set_nodeip()>Set</button>
+                    <br>
+                </div>
+        </div>
+    </div>
+    </div>
+    <div id="about card">
+        <div class="card">
+    </div>
+  </div>
+</div>
+
+<div id="Page3" class="page" style="display:none">
+  <div class="card-body">
+    <h5 class="card-title">Send</h5>
+    <p class="card-text"><input class="form-control" type="text" size="10" id="send-address" placeholder="Address"></p>
+    <p class="card-text"><input class="form-control" type="text" size="10" id="send-amount" placeholder="Amount"></p>
+    <button type="button" class="btn btn-outline-danger" onclick="send()">Send</button>
+  </div>
+</div>
+
 <script>
         const tempLoad = tempLoadWallet();
         const addr = tempLoad.address;
@@ -130,7 +186,56 @@
           tempSaveWallet(addr, privKey, pubKey);
           window.location.href = "./settings.html";
         }
+        function show(elementID) {
+        // find the requested page and alert if it's not found
+        const ele = document.getElementById(elementID);
+        if (!ele) {
+          alert("no such element");
+          return;
+        }
 
+        // get all pages, loop through them and hide them
+        const pages = document.getElementsByClassName('page');
+        for (let i = 0; i < pages.length; i++) {
+          pages[i].style.display = 'none';
+        }
+
+        // then show the requested page
+        ele.style.display = 'block';
+      }
+      function PassToKey() {
+          var pass = document.getElementById("password").value;
+          const wallet = loadWallet(pass);
+          if (wallet.privateKey != null) {
+            document.getElementById("key").innerHTML = wallet.privateKey;
+            document.getElementById("password").value = "";
+            document.getElementById("backed_up-remove-key").innerHTML = "Dont show key";
+          } else {
+            alert("Wrong password");
+          } 
+      }
+      function remove_key() {
+        document.getElementById("key").innerHTML = "";
+        document.getElementById("backed_up-remove-key").innerHTML = "";
+      }
+      // change_node_ip();
+      function set_nodeip() {
+        var node_ip = document.getElementById("node_ip").value;
+        set_node_ip(node_ip);
+        alert(get_node_ip());
+      }
+      function get_transactions_ui() {
+        var transactions = get_transactions();
+        var transactions_html = "";
+        if(transactions == null) {
+          transactions_html = "<tr><td>No transactions</td></tr>";
+        } else {
+          for(var i = 0; i < transactions.length; i++) {
+            transactions_html += "<tr><td>" + i + "</td><td>" + transactions[i].type + "</td><td>" + transactions[i].amount + "</td><td>" + transactions[i].time + "</td></tr>";
+          }
+        }
+        document.getElementById("transactions").innerHTML = transactions_html;
+      } 
 </script>
 
 </html>
