@@ -64,6 +64,20 @@
       margin-left: 20px;
       margin-right: 20px;
     }
+    .notification {
+      width: 15%; 
+      position: absolute;
+      right: 0;
+      margin-right: 20px;
+    }
+    .notification-before-disappear {
+      width: 15%; 
+      position: absolute;
+      right: 0;
+      margin-right: 20px;
+      animation: notification-before-disappear 1s;
+    }
+
   </style>
   <script>
     function myFunction() {
@@ -76,6 +90,7 @@
       <ul>
         <li style="float:right"><a href="./wallet.html">Lock wallet</a></li>
         <li style="float:left"><a style="color:#bbb"  onclick="show('Page1');">Home</a></li>
+        <li style="float:left"><a style="color:#bbb"  onclick="show('Page3');">Send</a></li>
         <li style="float:left"><a style="color:#bbb" onclick="show('Page2');">Settings</a></li>
       </ul>
     </nav>
@@ -83,6 +98,7 @@
       <div style="text-align: center;">
         <h2></h2>
     </div>
+    <div id="notification" class="alert alert-success notification" style="display: none;">
   </div> 
 </div>
 <div id="Page1" class="page">
@@ -116,6 +132,39 @@
     </div>
   </div>
 </div>
+<div id="Page3" class="page" style="display: none;">
+
+  <div id="main" class="mar_all" onload="myFunction()">
+    <div class="row col-12">
+      <div class="card col-6">
+        <div class="card-body">
+          <h5 class="card-title">Send</h5>
+          <p class="card-text"><input class="form-control" type="text" size="10" id="send_address" placeholder="Address"></p>
+          <p class="card-text"><input class="form-control" type="text" size="10" id="send_amount" placeholder="Amount"></p>
+          <button class="btn btn-outline-danger" onclick="send_tx()">Send</button>
+        </div>
+      </div>
+      <div class="card col-6">
+        <div class="card-body">
+          <h5 class="card-title">Transactions: </h5>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Type</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Time</th>
+              </tr>
+            </thead>
+            <tbody id="transactions1">
+            </tbody>
+        </div>
+      </div>
+      </div>  
+    </div>
+  </div>
+</div>
+
 <div id="Page2" class="page" style="display:none">
   <div id="card">
     <div class="card-body">
@@ -129,7 +178,8 @@
                     <br>
                     <input type="password" id="password" placeholder="Password">
                     <button class="btn btn-outline-danger" onclick=PassToKey()>Backup</button>
-                    <br>
+                    <br>        <div id="send page">
+                      <div class="row col-12">
                 </div>
         </div>
     </div>
@@ -151,6 +201,18 @@
                 </div>
         </div>
     </div>
+    <div id="card">
+      <div class="card-body">
+        <div id="Backup privkey_ask"> 
+          <div id="click_to_reveal">
+              <div class="col-md-12">
+                  <div style="text-align: center;">
+                      <h5 class="card-title">Test</h5>
+                      <button class="btn btn-outline-danger" onclick="notification('notification test')">test</button>
+                      <br>
+                  </div>
+          </div>
+      </div>
     </div>
     <div id="about card">
         <div class="card">
@@ -158,15 +220,7 @@
   </div>
 </div>
 
-<div id="Page3" class="page" style="display:none">
-  <div class="card-body">
-    <h5 class="card-title">Send</h5>
-    <p class="card-text"><input class="form-control" type="text" size="10" id="send-address" placeholder="Address"></p>
-    <p class="card-text"><input class="form-control" type="text" size="10" id="send-amount" placeholder="Amount"></p>
-    <button type="button" class="btn btn-outline-danger" onclick="send()">Send</button>
-  </div>
-</div>
-
+    
 <script>
         const tempLoad = tempLoadWallet();
         const addr = tempLoad.address;
@@ -235,7 +289,45 @@
           }
         }
         document.getElementById("transactions").innerHTML = transactions_html;
+        document.getElementById("transactions1").innerHTML = transactions_html;
+
       } 
+      function notification(text) {
+        var notification = document.getElementById("notification");
+        notification.innerHTML = text;
+        notification.style.display = "block";
+        setTimeout(function(){ notification.style.display = "none"; }, 3000);
+      }
+      function red_notification(text) {
+        var notification = document.getElementById("notification");
+        notification.innerHTML = text;
+        notification.style.display = "block";
+        notification.style.backgroundColor = "red";
+        setTimeout(function(){ notification.style.display = "none"; }, 3000);
+      }
+      function send_tx() {
+        var amount = document.getElementById("amount").value;
+        var address = document.getElementById("address").value;
+        var balance = document.getElementById("balance").value;
+        // checks for validity
+        if(amount == "" || address == "") {
+          alert("Please fill in all fields");
+          return;
+        }
+        if(amount < 0) {
+          alert("Amount cannot be negative");
+          return;
+        }
+        if(amount > balance) {
+          alert("You don't have enough funds");
+          return;
+        }
+        // save the transaction
+        // set_transaction(type,amount)
+        notification("Transaction sent");
+        set_transaction("send", amount);
+
+      }
 </script>
 
 </html>
