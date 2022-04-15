@@ -112,18 +112,7 @@
           <p class="card-text"><input class="form-control" type="text" size="10" id="balance" value="0" readonly></p>
         </div>
         <div class="card-body">
-          <h5 class="card-title">Transactions: </h5>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Type</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Time</th>
-              </tr>
-            </thead>
-            <tbody id="transactions">
-            </tbody>
+          <h5 class="card-title">Transactions could be viewed in the send page</h5>
         </div>
       </div>
       <div class="col-6 mar">
@@ -288,7 +277,7 @@
             transactions_html += "<tr><td>" + i + "</td><td>" + transactions[i].type + "</td><td>" + transactions[i].amount + "</td><td>" + transactions[i].time + "</td></tr>";
           }
         }
-        document.getElementById("transactions").innerHTML = transactions_html;
+        //document.getElementById("transactions").innerHTML = transactions_html;
         document.getElementById("transactions1").innerHTML = transactions_html;
 
       } 
