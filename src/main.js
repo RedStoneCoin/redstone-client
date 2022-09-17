@@ -105,11 +105,11 @@ function get_node_ip() {
 
 // when we send a transaction, save it.
 // when balance checker detects new balance, save it
-function set_transaction(type,amount) {
+function set_transaction(type,amount,address) {
     const Store = require('electron-store');
     const store = new Store();  
     // save it to json array
-    let transactions = store.get('transactions');
+    let transactions = store.get('transactions-' + address);
     if (transactions == null) {
         transactions = [];
     }
@@ -122,15 +122,42 @@ function set_transaction(type,amount) {
         amount:amount,
         time:time
     });
-    store.set('transactions',transactions);
+    store.set('transactions-' + address,transactions);
 }
-function get_transactions() {
+function get_transactions(address) {
     const Store = require('electron-store');
     const store = new Store();  
-    let ret = store.get('transactions');
+    let ret = store.get('transactions-' + address);
     if (ret == null) {
         ret = null;
     }
     return ret;
-
+}
+function delete_transactions(address,index) {
+    const Store = require('electron-store');
+    const store = new Store();  
+    let transactions = store.get('transactions-' + address);
+    transactions.splice(index,1);
+    store.set('transactions-' + address,transactions);
+}
+// last step is  to send the transaction to the api
+// Redstone.send =
+//        send: function(
+//    url,
+//    sender,
+//    reciver,
+//    amount,
+//    payload,
+//    nonce,
+//    privateKey
+//)
+function send_transaction(address,amount,publicKey,privateKey) {
+    const Store = require('electron-store');
+    const store = new Store();  
+    let node_ip = store.get('node_ip');
+    let nonce = 0;
+    let payload = '';
+    let url = 'http://' + node_ip + '/json_api/submit_txn';
+    let tx = Redstone.send(node_ip,address,publicKey,amount,'',nonce,privateKey);
+    return tx;
 }

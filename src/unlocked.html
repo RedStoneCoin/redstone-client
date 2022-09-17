@@ -77,6 +77,14 @@
       margin-right: 20px;
       animation: notification-before-disappear 1s;
     }
+    .ul-notification {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #fff;
+      z-index: 999;
+    }
 
   </style>
   <script>
@@ -86,6 +94,8 @@
     </script>
   <body>
     <body onload="myFunction()">
+      <ul id="notification_list" class="notification ul-notification ">
+      </ul>
       <nav>
       <ul>
         <li style="float:right"><a href="./wallet.html">Lock wallet</a></li>
@@ -99,7 +109,7 @@
         <h2></h2>
     </div>
     <div id="notification" class="alert alert-success notification" style="display: none;">
-  </div> 
+
 </div>
 <div id="Page1" class="page">
   <div id="main" class="mar_all">
@@ -129,8 +139,8 @@
         <div class="card-body">
           <h5 class="card-title">Send</h5>
           <p class="card-text"><input class="form-control" type="text" size="10" id="send_address" placeholder="Address"></p>
-          <p class="card-text"><input class="form-control" type="text" size="10" id="send_amount" placeholder="Amount"></p>
-          <button class="btn btn-outline-danger" onclick="send_tx()">Send</button>
+          <p class="card-text"><input class="form-control" type="text" size="10" id="send_amount" placeholder="Amount RS"></p>
+          <button class="btn btn-outline-danger" onclick="send_tx()">Send RS</button>
         </div>
       </div>
       <div class="card col-6">
@@ -143,6 +153,8 @@
                 <th scope="col">Type</th>
                 <th scope="col">Amount</th>
                 <th scope="col">Time</th>
+                <th scope="col">Delite</th>
+
               </tr>
             </thead>
             <tbody id="transactions1">
@@ -225,6 +237,13 @@
 
         document.getElementById("address").value = addr;
         document.getElementById("balance").value = 0;
+        if (addr == undefined) {
+          alert("There was an error loading your wallet, please try again");
+          window.location.href = "index.html";
+        } 
+
+
+
         function Settings() {
           tempSaveWallet(addr, privKey, pubKey);
           window.location.href = "./settings.html";
@@ -236,6 +255,8 @@
           alert("no such element");
           return;
         }
+        // if address is undefiend, wallet was reloaded
+
 
         // get all pages, loop through them and hide them
         const pages = document.getElementsByClassName('page');
@@ -252,7 +273,7 @@
           if (wallet.privateKey != null) {
             document.getElementById("key").innerHTML = wallet.privateKey;
             document.getElementById("password").value = "";
-            document.getElementById("backed_up-remove-key").innerHTML = "Dont show key";
+            document.getElementById("backed_up-remove-key").innerHTML = "Dont show key - Click this";
           } else {
             alert("Wrong password");
           } 
@@ -268,54 +289,80 @@
         alert(get_node_ip());
       }
       function get_transactions_ui() {
-        var transactions = get_transactions();
+        var our_address = document.getElementById("address").value;
+        var transactions = get_transactions(our_address);
         var transactions_html = "";
         if(transactions == null) {
           transactions_html = "<tr><td>No transactions</td></tr>";
         } else {
           for(var i = 0; i < transactions.length; i++) {
-            transactions_html += "<tr><td>" + i + "</td><td>" + transactions[i].type + "</td><td>" + transactions[i].amount + "</td><td>" + transactions[i].time + "</td></tr>";
+            var time_ago = transactions[i].time;
+            time_ago = new Date(time_ago*1000);
+            time_ago = time_ago.toLocaleString();
+          
+            transactions_html += "<tr><td>" + i + "</td><td>" + transactions[i].type + "</td><td>" + transactions[i].amount + "</td><td>" + time_ago + "</td>" + "<td><button class='btn btn-outline-danger' onclick='delite_transaction(" + i + ")'>Delite</button></td></tr>";
           }
         }
         //document.getElementById("transactions").innerHTML = transactions_html;
         document.getElementById("transactions1").innerHTML = transactions_html;
 
       } 
+
+      // notification_v2 stack more notifications on top of each other
       function notification(text) {
-        var notification = document.getElementById("notification");
-        notification.innerHTML = text;
-        notification.style.display = "block";
-        setTimeout(function(){ notification.style.display = "none"; }, 3000);
+        var notification = document.getElementById("notification_list");
+        var notification_block = document.createElement("div");
+        notification_block.className = "alert alert-success";
+        notification_block.innerHTML = text;
+        // REMOVE dark border
+        notification_block.style.border = "none";
+        
+
+        notification.appendChild(notification_block);
+        setTimeout(function(){ notification.removeChild(notification_block); }, 3000);
+
+
+
       }
       function red_notification(text) {
-        var notification = document.getElementById("notification");
-        notification.innerHTML = text;
-        notification.style.display = "block";
-        notification.style.backgroundColor = "red";
-        setTimeout(function(){ notification.style.display = "none"; }, 3000);
+        var notification = document.getElementById("notification_list");
+        var notification_block = document.createElement("div");
+        notification_block.className = "alert alert-danger";
+        notification_block.innerHTML = text;
+        // REMOVE dark border
+        notification_block.style.border = "none";
+        
+
+        notification.appendChild(notification_block);
+        setTimeout(function(){ notification.removeChild(notification_block); }, 3000);
       }
       function send_tx() {
-        var amount = document.getElementById("amount").value;
-        var address = document.getElementById("address").value;
+        var our_address = document.getElementById("address").value;
+        var amount = document.getElementById("send_amount").value;
+        var address = document.getElementById("send_address").value;
         var balance = document.getElementById("balance").value;
-        // checks for validity
-        if(amount == "" || address == "") {
-          alert("Please fill in all fields");
-          return;
-        }
-        if(amount < 0) {
-          alert("Amount cannot be negative");
-          return;
-        }
-        if(amount > balance) {
-          alert("You don't have enough funds");
-          return;
-        }
-        // save the transaction
-        // set_transaction(type,amount)
-        notification("Transaction sent");
-        set_transaction("send", amount);
 
+        // fill in the amount and address
+        if(amount == "" || address == "") {
+          red_notification("Please fill in the amount and address");
+          return;
+        }
+        send_transaction(address, amount, pubKey, privKey);
+        set_transaction("send", amount, our_address);
+        //  send_transaction(address,amount,publicKey,privateKey)
+        send_transaction(address, amount, pubKey, privKey);
+        // update get_transactions_ui
+        get_transactions_ui();
+        notification("Transaction sent");
+
+
+      }
+      // delite_transaction
+      function delite_transaction(id) {
+        var our_address = document.getElementById("address").value;
+        // delete_transactions(address,index)
+        delete_transactions(our_address, id);
+        get_transactions_ui();
       }
 </script>
 
