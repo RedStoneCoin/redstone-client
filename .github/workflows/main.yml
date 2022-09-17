@@ -3,6 +3,7 @@ name: Build/release
 on: push
 
 jobs:
+
   release:
     runs-on: ${{ matrix.os }}
 
@@ -13,7 +14,9 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
-
+      - name: Install libarchive-tools for pacman build # Related https://github.com/electron-userland/electron-builder/issues/4181
+        if: startsWith(matrix.os, 'ubuntu')
+        run: sudo apt-get install libarchive-tools
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
