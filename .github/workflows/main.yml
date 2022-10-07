@@ -1,35 +1,32 @@
-name: Build/release
-
+# name of your github action
+name: CI
+# this will help you specify where to run 
 on:
   push:
     branches:
-      - master
-
+    # this will run on the electron branch
+      - electron
+# this is where the magic happens, each job happens in parallel btw
 jobs:
-  release:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-
+  build_on_mac:
+    runs-on: macOS-latest
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v1
-
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-
-      - name: Build/release Electron app
-        uses: michalzaq12/action-electron-nuxt@v1
-        with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          # type: string
-          github_token: ${{ secrets.github_token }}
-
-          # If the commit is tagged with a version (e.g. "v1.0.0")
-          # type: boolean
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    - uses: actions/checkout@master
+      with:
+        ref: electron
+    - uses: actions/setup-node@master
+      with:
+        node-version: 10.16
+    - name: see directory
+      run: ls
+  build_on_win:
+    runs-on: windows-2016
+    steps:
+    - uses: actions/checkout@master
+      with:
+        ref: feature/github-actions        
+    - uses: actions/setup-node@master
+      with:
+        node-version: 10.16
+    - name: see directory
+      run: ls
